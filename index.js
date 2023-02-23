@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { Configuration, OpenAIApi } from 'openai';
 
-const apiKey = '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'
+const apiKey = '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'
 
 const configuration = new Configuration({
     apiKey: apiKey,
@@ -26,6 +26,7 @@ app.use(express.urlencoded({ extended: false }))
 app.post('/api/v1/description', async (req, res) => {
     try {
         const request = req.body.text
+        console.log(request)
         const answer = await openai.createCompletion({
             model: "text-davinci-003",
             prompt: request,
