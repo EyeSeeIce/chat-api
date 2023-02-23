@@ -1,16 +1,13 @@
 import express from 'express'
-import sequelize from './db.js'
-import { authRoute, categoryRoute, goalRoute, taskRoute } from './routes/index.js'
-import GoalElementModel from './models/GoalElementModel.js'
-
 import cors from 'cors'
-import TaskModel from './models/TaskModel'
-import { authOnly } from './middlewares'
-import GoalModel from './models/GoalModel'
-import CategoryModel from './models/CategoryModel'
+import { Configuration, OpenAIApi } from 'openai';
 
+const apiKey = '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'
 
-require('dotenv').config({ path: `.env` })
+const configuration = new Configuration({
+    apiKey: apiKey,
+});
+const openai = new OpenAIApi(configuration);
 
 const app = express()
 
@@ -23,20 +20,35 @@ app.use(
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-app.use('/api/v1/task', [authOnly], taskRoute)
-app.use('/api/v1/goal', [authOnly], goalRoute)
-app.use('/api/v1/category', [authOnly], categoryRoute)
-app.use('/api/v1/auth', authRoute)
 
 
-app.get('/api/v1/sync', async (req, res) => {
-    await CategoryModel.sync({ force: true });
-    res.send('synced')
+
+app.post('/api/v1/description', async (req, res) => {
+    try {
+        const request = req.body.text
+        const answer = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: request,
+            temperature: 1,
+            max_tokens: 1200,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+        });
+
+        res.send({
+            text: answer.data.choices[0].text
+        })
+    } catch(Error) {
+        console.log(Error)
+        return res.status(400).send({
+            message: Error.message
+        })
+    }
 })
 
-app.listen(process.env.port, async () => {
+app.listen(4000, async () => {
     try {
-        await sequelize.authenticate();
         console.log('Connection has been established successfully.');
     } catch (error) {
         console.error('Unable to connect to the database:', error);
