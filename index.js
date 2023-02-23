@@ -2,10 +2,11 @@ import express from 'express'
 import cors from 'cors'
 import { Configuration, OpenAIApi } from 'openai';
 
-const apiKey = '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'
+const localApiKey = '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'
+const devApiKey = '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'
 
 const configuration = new Configuration({
-    apiKey: apiKey,
+    apiKey: devApiKey,
     organization: 'org-9YIixBIMfoocaSVbrp5eb0up',
 
 });
