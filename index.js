@@ -2,10 +2,12 @@ import express from 'express'
 import cors from 'cors'
 import { Configuration, OpenAIApi } from 'openai';
 
-const apiKey = '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'
+const apiKey = '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'
 
 const configuration = new Configuration({
     apiKey: apiKey,
+    organization: 'org-9YIixBIMfoocaSVbrp5eb0up',
+
 });
 const openai = new OpenAIApi(configuration);
 
@@ -48,7 +50,7 @@ app.post('/api/v1/description', async (req, res) => {
     }
 })
 
-app.listen(4002, async () => {
+app.listen(4001, async () => {
     try {
         console.log('Connection has been established successfully.');
     } catch (error) {
